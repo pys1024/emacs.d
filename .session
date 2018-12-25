@@ -1,0 +1,11 @@
+;;; -*- coding: utf-8; -*-
+;;; Automatically generated on Tue Dec 25 13:49:33 2018
+;;; Invoked by pengyongsheng@pengyongsheng-B85M-D3H using 26.1
+(setq-default session-file-alist '(("~/.emacs.d/custom.el" 1 nil 1 nil nil 2681 (overwrite-mode))))
+(setq-default file-name-history '("~/.emacs.d/custom.el"))
+(setq-default counsel-git-grep-cmd-history '("git --no-pager grep --full-name -n --no-color -i -I -e \"%s\""))
+(setq-default occur-collect-regexp-history '("\\1"))
+(setq-default serial-name-history '("/dev/ttyS0"))
+(setq-default serial-speed-history '("9600" "1200" "2400" "4800" "14400" "19200" "28800" "38400" "57600" "115200"))
+(setq-default slime-connect-host-history '("localhost"))
+(setq-default slime-connect-port-history '("4005"))
