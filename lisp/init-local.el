@@ -3,24 +3,18 @@
 ;;; pys1024 2018/12/26
 
 ;;; Code:
-;; (load-theme 'wombat t)
-
-;; (prefer-coding-system 'utf-8)
-;; (set-default-coding-systems 'utf-8)
-;; (set-terminal-coding-system 'utf-8)
-;; (set-keyboard-coding-system 'utf-8)
-
-;; (require 'package)
-;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-;; (package-initialize)
-
-;; function define
-;; (defun my-max-window()
-;;   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32 '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0))
-;;   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32 '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0)))
-;; ;;(run-with-idle-timer 0.01 nil 'my-max-window)
+(defun decrypt-file ()
+  "Decrypt file."
+  (interactive)
+  (shell-command (concat "cat "
+                         (buffer-file-name)
+                         " > tmp;mv tmp "
+                         (buffer-file-name)
+                         ";rm -f tmp"))
+  (revert-buffer t t t))
 
 (defun refresh-file ()
+  "Refresh file."
   (interactive)
   (revert-buffer t (not (buffer-modified-p)) t))
 
@@ -34,17 +28,21 @@
            (other-window 1))))
 
 (defun go-to-other-window ()
+  "Go to other window."
   (interactive)
   (other-window 1))
 
+
+
 ;; global set key
 (global-set-key (kbd "M-s r") 'refresh-file)
-;; (global-set-key (kbd "C-<f7>") 'eval-this-buffer)
 (global-set-key (kbd "C-x r") 'execute-this-buffer)
 (global-set-key (kbd "C-<tab>") 'go-to-other-window)
 (global-set-key (kbd "C-h C-f") 'find-function)
 (global-set-key (kbd "C-h C-v") 'find-variable)
 (global-set-key (kbd "C-h C-k") 'find-function-on-key)
+(global-set-key (kbd "s-,") 'scroll-down-line)
+(global-set-key (kbd "s-.") 'scroll-up-line)
 
 ;; global set variables
 (setq-default cursor-type 'bar)
@@ -60,11 +58,16 @@
 (set-face-attribute 'default nil :height 130)
 (delete-selection-mode 1)
 ;; (set-variable 'shell-command-switch "-c")
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+(add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
+(set-face-attribute 'comint-highlight-prompt nil
+                    :inherit nil)
 
 
 ;;(my-max-window)
 (setq initial-frame-alist '((fullscreen . maximized)))
-
+(add-to-list 'display-buffer-alist
+             '("^\\*shell\\*$" . (display-buffer-same-window)))
 ;; (put 'dired-find-alternate-file 'disabled nil)
 ;; (with-eval-after-load 'dired
 ;;   (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file))
@@ -84,7 +87,7 @@
 ;; (require 'popwin)
 ;; (popwin-mode 1)
 ;; (setq ring-bell-function 'ignore)
-;; (setq make-backup-files nil)
+(setq make-backup-files nil)
 ;; (require 'dired-x)
 ;; (sp-local-pair '(emacs-lisp-mode emacs-interaction-mode) "'" nil :action nil)
 
