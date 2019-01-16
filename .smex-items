@@ -1,0 +1,28 @@
+
+;; ----- smex-history -----
+(
+ grep
+ calculator
+ recover-file
+ eval-buffer
+ package-install
+ github-clone
+ shell
+)
+
+;; ----- smex-data -----
+(
+ (cd . 1)
+ (grep . 4)
+ (package-install . 6)
+ (magit-status . 2)
+ (shell . 3)
+ (browse-url-w3 . 2)
+ (browse-web . 11)
+ (browse-url . 1)
+ (shell-command . 1)
+ (github-clone . 1)
+ (eval-buffer . 1)
+ (recover-file . 2)
+ (calculator . 1)
+)
