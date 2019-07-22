@@ -1,22 +1,22 @@
 
 ;; ----- smex-history -----
 (
- grep
- calculator
- recover-file
- eval-buffer
- package-install
- github-clone
+ compile
  shell
+ company-tabnine-install-binary
+ package-install
+ package-refresh-contents
+ calculator
+ calc
 )
 
 ;; ----- smex-data -----
 (
  (cd . 1)
  (grep . 4)
- (package-install . 6)
+ (package-install . 16)
  (magit-status . 2)
- (shell . 3)
+ (shell . 16)
  (browse-url-w3 . 2)
  (browse-web . 11)
  (browse-url . 1)
@@ -24,5 +24,18 @@
  (github-clone . 1)
  (eval-buffer . 1)
  (recover-file . 2)
- (calculator . 1)
+ (calculator . 4)
+ (color-theme-sanityinc-tomorrow-night . 1)
+ (package-autoremove . 1)
+ (elm-package-refresh-contents . 1)
+ (package-refresh-contents . 2)
+ (helm-do-ag . 6)
+ (font-lock-mode . 1)
+ (global-font-lock-mode . 2)
+ (set-face-font . 1)
+ (ag-dired-regexp . 1)
+ (whitespace-cleanup . 5)
+ (calc . 1)
+ (company-tabnine-install-binary . 1)
+ (compile . 3)
 )

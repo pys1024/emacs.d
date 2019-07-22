@@ -41,8 +41,8 @@
 (global-set-key (kbd "C-h C-f") 'find-function)
 (global-set-key (kbd "C-h C-v") 'find-variable)
 (global-set-key (kbd "C-h C-k") 'find-function-on-key)
-(global-set-key (kbd "s-,") 'scroll-down-line)
-(global-set-key (kbd "s-.") 'scroll-up-line)
+(global-set-key (kbd "C-,") 'scroll-down-line)
+(global-set-key (kbd "C-.") 'scroll-up-line)
 
 ;; global set variables
 (setq-default cursor-type 'bar)
@@ -60,8 +60,6 @@
 ;; (set-variable 'shell-command-switch "-c")
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
-(set-face-attribute 'comint-highlight-prompt nil
-                    :inherit nil)
 
 
 ;;(my-max-window)
@@ -78,9 +76,26 @@
 ;; (global-set-key (kbd "C-=") 'er/expand-region)
 
 (require 'iedit)
-(require 'helm-ag)
+(require-package 'helm-ag)
 (require 'window-numbering)
+(require 'company-tabnine)
+(add-to-list 'company-backend #'company-tabnine)
 (window-numbering-mode)
+
+;; Trigger completion immediately.
+(setq company-idle-delay 0)
+
+;; Number the candidates (use M-1, M-2 etc to select completions).
+(setq company-show-numbers t)
+
+;; Use the tab-and-go frontend.
+;; Allows TAB to select and complete at the same time.
+(company-tng-configure-default)
+(setq company-frontends
+      '(company-tng-frontend
+        company-pseudo-tooltip-frontend
+        company-echo-metadata-frontend))
+
 ;; ;;
 ;; (global-auto-revert-mode 1)
 ;; (setq auto-save-default nil)
@@ -104,6 +119,7 @@
 ;;      '(("\\.html\\'" . web-mode))
 ;;      auto-mode-alist))
 ;;      (require-package )
-
+(require 'comint)
+(set-face-attribute 'comint-highlight-prompt nil :inherit nil)
 (provide 'init-local)
 ;;; init-local ends here
