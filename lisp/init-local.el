@@ -32,7 +32,59 @@
   (interactive)
   (other-window 1))
 
+(setq gdb-many-windows nil)
 
+(defun set-gdb-layout (&optional c-buffer)
+  (if (not c-buffer)
+      (setq c-buffer (window-buffer (selected-window)))) ;; save current buffer
+  ;; from http://stackoverflow.com/q/39762833/846686
+  (set-window-dedicated-p (selected-window) nil) ;; unset dedicate state if needed
+  (switch-to-buffer gud-comint-buffer)
+  (delete-other-window) ;; clean all
+  
+  (let* (
+         (w-gdb (selected-window))
+         (w-source (split-window w-gdb (floor (/ (* (window-height) 1) 3))
+                                 'below))
+         (w-stack (split-window w-source nil
+                                'below))
+         (w-locals (split-window w-gdb nil 'right))
+         (w-disass (split-window w-source nil 'right))
+         (w-break (split-window w-stack nil
+                                'right))
+         (w-io (split-window w-break nil 'below))
+         )
+        (set-window-buffer w-io (gdb-get-buffer-create 'gdb-inferior-io))
+        (set-window-dedicated-p w-io t)
+        (set-window-buffer w-break (gdb-get-buffer-create 'gdb-breakpoints-buffer))
+        (set-window-dedicated-p w-break t)
+        (set-window-buffer w-locals (gdb-get-buffer-create 'gdb-registers-buffer))
+        (set-window-dedicated-p w-locals t)
+        (set-window-buffer w-stack (gdb-get-buffer-create 'gdb-stack-buffer))
+        (set-window-dedicated-p w-stack t)
+        (set-window-buffer w-disass (gdb-get-buffer-create 'gdb-dissassembly-buffer))
+        (set-window-dedicated-p w-disass t)
+        
+        (set-window-buffer w-gdb gud-comint-buffer)
+        
+        (select-window w-gdb)
+        (set-window-buffer w-source c-buffer)
+        
+        ))
+
+(defadvice gdb (around args activate)
+  "Change the way to gdb works."
+  (setq global-config-editing (current-window-configuration)) ;; to restore: (set-window-configuration c-editing
+  (let (
+        (c-buffer (window-buffer (selected-window))) ;; save current buffer
+        )
+       ad-do-it
+       (set-gdb-layout c-buffer))
+  )
+(defadvice gdb-reset (around args activate)
+  "Change the way to gdb exit."
+  ad-do-it
+  (set-window-configuration global-config-editing))
 
 ;; global set key
 (global-set-key (kbd "M-s r") 'refresh-file)
@@ -44,6 +96,10 @@
 (global-set-key (kbd "C-,") 'scroll-down-line)
 (global-set-key (kbd "C-.") 'scroll-up-line)
 
+(define-key visual-line-mode-map [remap kill-line] nil)
+(define-key visual-line-mode-map [remap move-beginning-of-line] nil)
+(define-key visual-line-mode-map [remap move-end-of-line] nil)
+
 ;; global set variables
 (setq-default cursor-type 'bar)
 ;; ;;(global-hl-line-mode t)
@@ -52,11 +108,14 @@
 (global-visual-line-mode t)
 ;;
 (size-indication-mode 1)
+(setq-default projectile-tags-backend 'ggtags)
 ;;
 ;;
 ;;
-(set-face-attribute 'default nil :height 130)
+;; (set-face-attribute 'default nil :height 130)
 (delete-selection-mode 1)
+(set-frame-font "Courier New-13")
+(setq shell-file-name "bash")
 ;; (set-variable 'shell-command-switch "-c")
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
