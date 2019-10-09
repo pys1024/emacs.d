@@ -86,6 +86,44 @@
   ad-do-it
   (set-window-configuration global-config-editing))
 
+;; (defadvice gdb-frame-handler- (after activate)
+;; (advice-my-gdb-frame ))
+
+(defun advice-my-gdb-frame ()
+  (if (not (gdb-get-buffer 'gdb-assembler-buffer))
+      (progn
+        (split-window-horizontally)
+        (enlarge-window-horizontally (/ (window-width) 3))
+        (other-window 1)
+        
+        (gdb-set-window-buffer (gdb-inferior-io-name))
+        
+        (other-window 1)
+        (split-window-horizontally)
+        
+        (ohter-window 1)
+        (gdb-set-window-buffer (gdb-stack-buffer-name))
+        
+        (other-window 1)
+        
+        (other-window 1)
+        (toggle-current-window-dedication)
+        (gdb-set-window-buffer (gdb-get-buffer-create 'gdb-assembler-buffer))
+        (toggle-current-window-dedication)
+        
+        (split-window-horizontally (/ (* (window-width) 2) 3))
+        
+        (other-window 1)
+        (gdb-set-window-buffer (gdb-get-buffer-create 'gdb-registers-buffer))
+        
+        (other-window 1)
+        (toggle-current-window-decication)
+        (gdb-set-window-buffer (gdb-get-buffer-create 'gdb-memory-buffer))
+        (toggle-current-window-dedication)
+        
+        (other-window 2)
+        )))
+
 ;; global set key
 (global-set-key (kbd "M-s r") 'refresh-file)
 (global-set-key (kbd "C-x r") 'execute-this-buffer)
@@ -99,6 +137,18 @@
 (define-key visual-line-mode-map [remap kill-line] nil)
 (define-key visual-line-mode-map [remap move-beginning-of-line] nil)
 (define-key visual-line-mode-map [remap move-end-of-line] nil)
+
+;;; dired mode -- just open one buffer
+(put 'dired-find-alternate-file 'disabled nil)
+(require 'dired)
+(define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
+(with-eval-after-load 'dired
+  (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file))
+(add-hook 'dired-mode-hook
+          (lambda ()
+                  (define-key dired-mode-map (kbd "^")
+                    (lambda () (interactive) (find-alternate-file "..")))))
+
 
 ;; global set variables
 (setq-default cursor-type 'bar)
@@ -119,7 +169,8 @@
 ;; (set-variable 'shell-command-switch "-c")
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
-
+(set-face-attribute 'comint-highlight-prompt nil
+                    :inherit nil)
 
 ;;(my-max-window)
 (setq initial-frame-alist '((fullscreen . maximized)))
