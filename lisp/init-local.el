@@ -3,6 +3,31 @@
 ;;; pys1024 2018/12/26
 
 ;;; Code:
+(require 'ranger)
+(require 'llvm-mode)
+(require 'tablegen-mode)
+(require 'emacs)
+(require 'cmake-mode)
+(require 'ninja-mode)
+(rquire 'rpn-calc)
+(require 'neotree)
+(require 'init-evil)
+(add-to-list 'load-path "~/.emacs.d/spacemacs-thems")
+(require 'spacemacs-dark-theme)
+
+(defun sudo-reopen ()
+  "Reopen current file with sudo."
+  (setq sudo-file-real-path
+        (replace-regexp-in-string "\n" ""
+                                  (shell-command-to-string
+                                   (concat "readlink -f " buffer-file-truename))
+                                  )
+        )
+  (kill-current-buffer)
+  (find-file (concat "/sudo::" sudo-file-real-path))
+  (interactive)
+  )
+
 (defun decrypt-file ()
   "Decrypt file."
   (interactive)
@@ -21,8 +46,27 @@
 (defun execute-this-buffer()
   "Execute buffer that visited now."
   (interactive)
-  (if (string= (file-name-extension buffer-file-name) '"sh")
-      (sh-execute-region (point-min) (point-max))
+  (let ((file_ex (file-name-extension buffer-file-name)))
+       (cond ((or (string= file_ex 'sh)
+                  (string= file_ex 'py))
+              (shell-command (concat (buffer-file-name))))
+          ;; (sh-execute-region (point-min) (point-max))
+          ((or (string= file_ex 'c)
+               (string= file_ex 'cpp)
+               (string= file_ex 'cc))
+           (shell-command (concat "gcc "
+                                  (buffer-file-name)
+                                  " -o /tmp/emacs_tmp;"
+                                  "echo ==========================================;"
+                                  "/tmp/emacs_tmp")))
+         ((string= file 'el)
+          (progn (eval-buffer nil (get-buffer-create "output"))
+            (switch-to-buffer-other-window "output")
+            (other-window 1)))
+         )
+       )
+  )
+
     (progn (eval-buffer nil (get-buffer-create "output"))
            (switch-to-buffer-other-window "output")
            (other-window 1))))
@@ -74,7 +118,7 @@
 
 (defadvice gdb (around args activate)
   "Change the way to gdb works."
-  (setq global-config-editing (current-window-configuration)) ;; to restore: (set-window-configuration c-editing
+  (setq global-config-editing (current-window-configuration)) ;; to restore: (set-window-configuration c-editing)
   (let (
         (c-buffer (window-buffer (selected-window))) ;; save current buffer
         )
@@ -86,7 +130,7 @@
   ad-do-it
   (set-window-configuration global-config-editing))
 
-;; (defadvice gdb-frame-handler- (after activate)
+;; (defadvice gdb-frame-handler-1 (after activate)
 ;; (advice-my-gdb-frame ))
 
 (defun advice-my-gdb-frame ()
@@ -101,7 +145,7 @@
         (other-window 1)
         (split-window-horizontally)
         
-        (ohter-window 1)
+        (other-window 1)
         (gdb-set-window-buffer (gdb-stack-buffer-name))
         
         (other-window 1)
@@ -117,7 +161,7 @@
         (gdb-set-window-buffer (gdb-get-buffer-create 'gdb-registers-buffer))
         
         (other-window 1)
-        (toggle-current-window-decication)
+        (toggle-current-window-dedication)
         (gdb-set-window-buffer (gdb-get-buffer-create 'gdb-memory-buffer))
         (toggle-current-window-dedication)
         
@@ -164,7 +208,8 @@
 ;;
 ;; (set-face-attribute 'default nil :height 130)
 (delete-selection-mode 1)
-(set-frame-font "Courier New-13")
+;; (set-frame-font "Courier New-13")
+(set-frame-font "Source code pro-13")
 (setq shell-file-name "bash")
 ;; (set-variable 'shell-command-switch "-c")
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
