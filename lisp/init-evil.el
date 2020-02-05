@@ -2,7 +2,7 @@
 
 (add-to-list 'load-path "~/.emacs.d/elpa-26.1/evil")
 ;;; config evil-leader
-(require 'evil-leader)
+(require-package 'evil-leader)
 (global-evil-leader-mode)
 (evil-leader/set-leader "<SPC>")
 (evil-leader/set-key
@@ -35,7 +35,7 @@
 (setq evil-toggle-key "")
 ;;; don't bind [tab] to evil-jump-forward
 (setq evil-want-C-i-jump nil)
-(require 'evil)
+(require-package 'evil)
 (evil-mode 1)
 
 ;;; remove all keybindings from insert-state keymap, use emacs-state when edting
@@ -48,7 +48,7 @@
 (define-key evil-normal-state-map (kbd "TAB") 'indent-for-tab-command)
 
 (define-key evil-normal-state-map (kbd ",") 'scroll-down-line)
-(define-key evil-normal-state-map (kbd "." 'scroll-up-line)
+(define-key evil-normal-state-map (kbd ".") 'scroll-up-line)
 (define-key evil-normal-state-map (kbd "M-.") 'xref-find-definitions)
 (define-key evil-normal-state-map (kbd "C-r") 'isearch-backward)
 

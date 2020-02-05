@@ -3,17 +3,15 @@
 ;;; pys1024 2018/12/26
 
 ;;; Code:
-(require 'ranger)
-(require 'llvm-mode)
-(require 'tablegen-mode)
-(require 'emacs)
-(require 'cmake-mode)
-(require 'ninja-mode)
-(rquire 'rpn-calc)
-(require 'neotree)
+(require-package 'ranger)
+;;(require-package 'llvm-mode)
+;;(require-package 'tablegen-mode)
+;;(require-package 'emacs)
+(require-package 'cmake-mode)
+(require-package 'ninja-mode)
+(require-package 'rpn-calc)
+(require-package 'neotree)
 (require 'init-evil)
-(add-to-list 'load-path "~/.emacs.d/spacemacs-thems")
-(require 'spacemacs-dark-theme)
 
 (defun sudo-reopen ()
   "Reopen current file with sudo."
@@ -47,9 +45,9 @@
   "Execute buffer that visited now."
   (interactive)
   (let ((file_ex (file-name-extension buffer-file-name)))
-       (cond ((or (string= file_ex 'sh)
-                  (string= file_ex 'py))
-              (shell-command (concat (buffer-file-name))))
+    (cond ((or (string= file_ex 'sh)
+               (string= file_ex 'py))
+           (shell-command (concat (buffer-file-name))))
           ;; (sh-execute-region (point-min) (point-max))
           ((or (string= file_ex 'c)
                (string= file_ex 'cpp)
@@ -59,17 +57,13 @@
                                   " -o /tmp/emacs_tmp;"
                                   "echo ==========================================;"
                                   "/tmp/emacs_tmp")))
-         ((string= file 'el)
-          (progn (eval-buffer nil (get-buffer-create "output"))
-            (switch-to-buffer-other-window "output")
-            (other-window 1)))
-         )
-       )
+          ((string= file_ex 'el)
+           (progn (eval-buffer nil (get-buffer-create "output"))
+                  (switch-to-buffer-other-window "output")
+                  (other-window 1)))
+          )
+    )
   )
-
-    (progn (eval-buffer nil (get-buffer-create "output"))
-           (switch-to-buffer-other-window "output")
-           (other-window 1))))
 
 (defun go-to-other-window ()
   "Go to other window."
@@ -85,7 +79,7 @@
   (set-window-dedicated-p (selected-window) nil) ;; unset dedicate state if needed
   (switch-to-buffer gud-comint-buffer)
   (delete-other-window) ;; clean all
-  
+
   (let* (
          (w-gdb (selected-window))
          (w-source (split-window w-gdb (floor (/ (* (window-height) 1) 3))
@@ -108,12 +102,12 @@
         (set-window-dedicated-p w-stack t)
         (set-window-buffer w-disass (gdb-get-buffer-create 'gdb-dissassembly-buffer))
         (set-window-dedicated-p w-disass t)
-        
+
         (set-window-buffer w-gdb gud-comint-buffer)
-        
+
         (select-window w-gdb)
         (set-window-buffer w-source c-buffer)
-        
+
         ))
 
 (defadvice gdb (around args activate)
@@ -122,8 +116,8 @@
   (let (
         (c-buffer (window-buffer (selected-window))) ;; save current buffer
         )
-       ad-do-it
-       (set-gdb-layout c-buffer))
+    ad-do-it
+    (set-gdb-layout c-buffer))
   )
 (defadvice gdb-reset (around args activate)
   "Change the way to gdb exit."
@@ -139,32 +133,32 @@
         (split-window-horizontally)
         (enlarge-window-horizontally (/ (window-width) 3))
         (other-window 1)
-        
+
         (gdb-set-window-buffer (gdb-inferior-io-name))
-        
+
         (other-window 1)
         (split-window-horizontally)
-        
+
         (other-window 1)
         (gdb-set-window-buffer (gdb-stack-buffer-name))
-        
+
         (other-window 1)
-        
+
         (other-window 1)
         (toggle-current-window-dedication)
         (gdb-set-window-buffer (gdb-get-buffer-create 'gdb-assembler-buffer))
         (toggle-current-window-dedication)
-        
+
         (split-window-horizontally (/ (* (window-width) 2) 3))
-        
+
         (other-window 1)
         (gdb-set-window-buffer (gdb-get-buffer-create 'gdb-registers-buffer))
-        
+
         (other-window 1)
         (toggle-current-window-dedication)
         (gdb-set-window-buffer (gdb-get-buffer-create 'gdb-memory-buffer))
         (toggle-current-window-dedication)
-        
+
         (other-window 2)
         )))
 
@@ -214,8 +208,8 @@
 ;; (set-variable 'shell-command-switch "-c")
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
-(set-face-attribute 'comint-highlight-prompt nil
-                    :inherit nil)
+;;(set-face-attribute 'comint-highlight-prompt nil
+;;                    :inherit nil)
 
 ;;(my-max-window)
 (setq initial-frame-alist '((fullscreen . maximized)))
@@ -230,11 +224,11 @@
 ;; (require 'expand-region)
 ;; (global-set-key (kbd "C-=") 'er/expand-region)
 
-(require 'iedit)
+(require-package 'iedit)
 (require-package 'helm-ag)
-(require 'window-numbering)
-(require 'company-tabnine)
-(add-to-list 'company-backend #'company-tabnine)
+(require-package 'window-numbering)
+(require-package 'company-tabnine)
+;;(add-to-list 'company-backend #'company-tabnine)
 (window-numbering-mode)
 
 ;; Trigger completion immediately.
@@ -254,11 +248,11 @@
 ;; ;;
 ;; (global-auto-revert-mode 1)
 ;; (setq auto-save-default nil)
-;; (require 'popwin)
+;; (require-package 'popwin)
 ;; (popwin-mode 1)
 ;; (setq ring-bell-function 'ignore)
 (setq make-backup-files nil)
-;; (require 'dired-x)
+;; (require-package 'dired-x)
 ;; (sp-local-pair '(emacs-lisp-mode emacs-interaction-mode) "'" nil :action nil)
 
 ;; (define-advice show-paren-function (:around (fn) fix-show-paren-function)
@@ -275,6 +269,6 @@
 ;;      auto-mode-alist))
 ;;      (require-package )
 (require 'comint)
-(set-face-attribute 'comint-highlight-prompt nil :inherit nil)
+;;(set-face-attribute 'comint-highlight-prompt nil :inherit nil)
 (provide 'init-local)
 ;;; init-local ends here

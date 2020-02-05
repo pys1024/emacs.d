@@ -1,8 +1,10 @@
 (require-package 'color-theme-sanityinc-solarized)
 (require-package 'color-theme-sanityinc-tomorrow)
+(require-package 'spacemacs-theme)
 
 ;; If you don't customize it, this is the theme you get.
 (setq-default custom-enabled-themes '(sanityinc-tomorrow-night))
+;; (setq-default custom-enabled-themes '(spacemacs-dark))
 
 ;; Ensure that themes will be applied even if they have not been customized
 (defun reapply-themes ()
@@ -30,6 +32,11 @@
   (setq custom-enabled-themes '(sanityinc-tomorrow-night))
   (reapply-themes))
 
+(defun spacemacs-dark()
+  "Activate a dark color theme."
+  (interactive)
+  (setq custom-enabled-themes '(spacemacs-dark))
+  (reapply-themes))
 
 (when (maybe-require-package 'dimmer)
   (setq-default dimmer-fraction 0.15)

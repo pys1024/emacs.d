@@ -1,0 +1,7 @@
+.emacs.desktop*
+.historian
+.session
+history
+recentf
+elpa/gnupg/
+.smex-items
