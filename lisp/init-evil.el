@@ -8,7 +8,7 @@
 (evil-leader/set-key
   "." 'evil-scroll-page-down
   "," 'evil-scroll-page-up
-  "<SPC>" 'execute-extender-command
+  "<SPC>" 'execute-extended-command
   "<tab>" 'switch-to-buffer
   "!" 'shell-command
   ";" 'comment-line
