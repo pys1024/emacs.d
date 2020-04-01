@@ -1,3 +1,7 @@
+;;; init-gui-frames.el --- Behaviour specific to non-TTY frames -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
+
 ;;----------------------------------------------------------------------------
 ;; Stop C-z from minimizing windows under OS X
 ;;----------------------------------------------------------------------------
@@ -31,9 +35,8 @@
 (if *is-a-mac*
     (add-hook 'after-make-frame-functions
               (lambda (frame)
-                (set-frame-parameter frame 'menu-bar-lines
-                                     (if (display-graphic-p frame)
-                                         1 0))))
+                (unless (display-graphic-p frame)
+                  (set-frame-parameter frame 'menu-bar-lines 0))))
   (when (fboundp 'menu-bar-mode)
     (menu-bar-mode -1)))
 
@@ -92,3 +95,4 @@
 
 
 (provide 'init-gui-frames)
+;;; init-gui-frames.el ends here

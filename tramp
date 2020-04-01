@@ -1,0 +1,31 @@
+;; -*- emacs-lisp -*- <20/03/22 15:02:07 /home/pengyongsheng/.emacs.d/tramp>
+;; Tramp connection history.  Don't change this file.
+;; You can delete it, forcing Tramp to reapply the checks.
+
+(((tramp-file-name "ssh" "homeassistant" nil "192.168.0.101" nil nil nil)
+  ("uname" "Linux 4.19.66-v7l+")
+  ("locale" "LC_ALL=en_US.utf8")
+  ("test" "test")
+  ("remote-path"
+   ("/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin"))
+  ("remote-shell" "/bin/sh")
+  ("file-exists" "test -e")
+  ("case-insensitive" nil)
+  ("stat" "env QUOTING_STYLE=locale \\stat")
+  ("id" "/usr/bin/id")
+  ("gid-integer" 995)
+  ("env-u-option" t)
+  ("readlink" "\\readlink")
+  ("gid-string" "homeassistant")
+  ("perl-file-spec" t)
+  ("perl-cwd-realpath" t)
+  ("perl" "\\perl")
+  ("~" "/home/homeassistant")
+  ("ls" "/bin/ls --color=never")
+  ("ls-quoting-style" t)
+  ("ls-dired" t)
+  ("bzr" nil)
+  ("git" "\\git")
+  ("hg" nil))
+ ((tramp-file-name "ssh" "homeassistant" nil "192.168.0.103" nil nil nil)
+  nil))

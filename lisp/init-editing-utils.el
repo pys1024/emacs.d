@@ -1,4 +1,7 @@
-;; -*- lexical-binding: t -*-
+;;; init-editing-utils.el --- Day-to-day editing helpers -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
+
 (require-package 'unfill)
 
 (when (fboundp 'electric-pair-mode)
@@ -61,7 +64,7 @@
 
 (when (maybe-require-package 'beacon)
   (setq-default beacon-lighter "")
-  (setq-default beacon-size 5)
+  (setq-default beacon-size 20)
   (add-hook 'after-init-hook 'beacon-mode))
 
 
@@ -84,8 +87,18 @@
 
 
 
-(unless (fboundp 'display-line-numbers-mode)
-  (require-package 'nlinum))
+(when (fboundp 'display-line-numbers-mode)
+  (setq-default display-line-numbers-width 3)
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode))
+
+(when (maybe-require-package 'goto-line-preview)
+  (global-set-key [remap goto-line] 'goto-line-preview)
+
+  (when (fboundp 'display-line-numbers-mode)
+    (defun sanityinc/with-display-line-numbers (f &rest args)
+      (let ((display-line-numbers t))
+        (apply f args)))
+    (advice-add 'goto-line-preview :around #'sanityinc/with-display-line-numbers)))
 
 
 (when (require-package 'rainbow-delimiters)
@@ -103,6 +116,7 @@
   (after-load 'symbol-overlay
     (diminish 'symbol-overlay-mode)
     (define-key symbol-overlay-mode-map (kbd "M-i") 'symbol-overlay-put)
+    (define-key symbol-overlay-mode-map (kbd "M-I") 'symbol-overlay-remove-all)
     (define-key symbol-overlay-mode-map (kbd "M-n") 'symbol-overlay-jump-next)
     (define-key symbol-overlay-mode-map (kbd "M-p") 'symbol-overlay-jump-prev)))
 
@@ -163,9 +177,8 @@
 (global-set-key (kbd "C-.") 'set-mark-command)
 (global-set-key (kbd "C-x C-.") 'pop-global-mark)
 
-;; (when (maybe-require-package 'avy)
-;; (global-set-key (kbd "C-;") 'avy-goto-char-timer))
-(maybe-require-package 'avy)
+(when (maybe-require-package 'avy)
+  (global-set-key (kbd "C-;") 'avy-goto-char-timer))
 
 (require-package 'multiple-cursors)
 ;; multiple-cursors
@@ -210,13 +223,13 @@
 ;; use M-S-up and M-S-down, which will work even in lisp modes.
 ;;----------------------------------------------------------------------------
 (require-package 'move-dup)
-(global-set-key [M-up] 'md/move-lines-up)
-(global-set-key [M-down] 'md/move-lines-down)
-(global-set-key [M-S-up] 'md/move-lines-up)
-(global-set-key [M-S-down] 'md/move-lines-down)
+(global-set-key [M-up] 'md-move-lines-up)
+(global-set-key [M-down] 'md-move-lines-down)
+(global-set-key [M-S-up] 'md-move-lines-up)
+(global-set-key [M-S-down] 'md-move-lines-down)
 
-(global-set-key (kbd "C-c d") 'md/duplicate-down)
-(global-set-key (kbd "C-c u") 'md/duplicate-up)
+(global-set-key (kbd "C-c d") 'md-duplicate-down)
+(global-set-key (kbd "C-c u") 'md-duplicate-up)
 
 ;;----------------------------------------------------------------------------
 ;; Fix backward-up-list to understand quotes, see http://bit.ly/h7mdIL
@@ -237,7 +250,7 @@
 ;; Cut/copy the current line if no region is active
 ;;----------------------------------------------------------------------------
 (require-package 'whole-line-or-region)
-(add-hook 'after-init-hook 'whole-line-or-region-mode)
+(add-hook 'after-init-hook 'whole-line-or-region-global-mode)
 (after-load 'whole-line-or-region
   (diminish 'whole-line-or-region-local-mode))
 
@@ -320,11 +333,23 @@ With arg N, insert N newlines."
 (add-hook 'after-init-hook 'hes-mode)
 
 
-(require-package 'guide-key)
-(setq guide-key/guide-key-sequence t)
-(add-hook 'after-init-hook 'guide-key-mode)
-(after-load 'guide-key
-  (diminish 'guide-key-mode))
+;; (require-package 'which-key)
+;; (add-hook 'after-init-hook 'which-key-mode)
+;; (setq-default which-key-idle-delay 1.5)
+;; (after-load 'which-key
+  ;; (diminish 'which-key-mode))
+
+
+(defun sanityinc/disable-features-during-macro-call (orig &rest args)
+  "When running a macro, disable features that might be expensive.
+ORIG is the advised function, which is called with its ARGS."
+  (let (post-command-hook
+        font-lock-mode
+        (tab-always-indent (or (eq 'complete tab-always-indent) tab-always-indent)))
+    (apply orig args)))
+
+(advice-add 'kmacro-call-macro :around 'sanityinc/disable-features-during-macro-call)
 
 
 (provide 'init-editing-utils)
+;;; init-editing-utils.el ends here

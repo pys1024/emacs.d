@@ -13,6 +13,7 @@
 (require-package 'neotree)
 (require 'init-evil)
 
+
 (defun sudo-reopen ()
   "Reopen current file with sudo."
   (setq sudo-file-real-path

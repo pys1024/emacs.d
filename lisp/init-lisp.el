@@ -1,3 +1,7 @@
+;;; init-lisp.el --- Emacs lisp settings, and common config for other lisps -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
+
 (require-package 'elisp-slime-nav)
 (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
   (add-hook hook 'turn-on-elisp-slime-nav-mode))
@@ -6,6 +10,20 @@
 (setq-default initial-scratch-message
               (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
 
+
+(defun sanityinc/headerise-elisp ()
+  "Add minimal header and footer to an elisp buffer in order to placate flycheck."
+  (interactive)
+  (let ((fname (if (buffer-file-name)
+                   (file-name-nondirectory (buffer-file-name))
+                 (error "This buffer is not visiting a file"))))
+    (save-excursion
+      (goto-char (point-min))
+      (insert ";;; " fname " --- Insert description here -*- lexical-binding: t -*-\n"
+              ";;; Commentary:\n"
+              ";;; Code:\n\n")
+      (goto-char (point-max))
+      (insert ";;; " fname " ends here\n"))))
 
 
 ;; Make C-x C-e run 'eval-region if the region is active
@@ -32,6 +50,26 @@
     (with-current-buffer out-buffer-name
       (view-mode 1))))
 (advice-add 'pp-display-expression :after 'sanityinc/make-read-only)
+
+
+
+(defun sanityinc/load-this-file ()
+  "Load the current file or buffer.
+The current directory is temporarily added to `load-path'.  When
+there is no current file, eval the current buffer."
+  (interactive)
+  (let ((load-path (cons default-directory load-path))
+        (file (buffer-file-name)))
+    (if file
+        (progn
+          (save-some-buffers nil (apply-partially 'derived-mode-p 'emacs-lisp-mode))
+          (load-file (buffer-file-name))
+          (message "Loaded %s" file))
+      (eval-buffer)
+      (message "Evaluated %s" (current-buffer)))))
+
+(after-load 'lisp-mode
+  (define-key emacs-lisp-mode-map (kbd "C-c C-l") 'sanityinc/load-this-file))
 
 
 
@@ -251,3 +289,4 @@
 (maybe-require-package 'cask-mode)
 
 (provide 'init-lisp)
+;;; init-lisp.el ends here

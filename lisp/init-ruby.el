@@ -1,10 +1,14 @@
+;;; init-ruby.el --- Support for the Ruby language -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
+
 ;;; Basic ruby setup
 (require-package 'ruby-hash-syntax)
 
 (add-auto-mode 'ruby-mode
-               "Rakefile\\'" "\\.rake\\'" "\\.rxml\\'"
+               "\\.rxml\\'"
                "\\.rjs\\'" "\\.irbrc\\'" "\\.pryrc\\'" "\\.builder\\'" "\\.ru\\'"
-               "\\.gemspec\\'" "Gemfile\\'" "Kirkfile\\'")
+               "\\.gemspec\\'" "Kirkfile\\'")
 (add-auto-mode 'conf-mode "Gemfile\\.lock\\'")
 
 (setq-default
@@ -123,3 +127,4 @@
 
 
 (provide 'init-ruby)
+;;; init-ruby.el ends here
